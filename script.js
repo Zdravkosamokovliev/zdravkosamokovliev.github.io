@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: "Старт: Нос Шабла", altitude: 0, totalFloors: 0 }, { name: "Град Свищов", altitude: 90, totalFloors: 30 }, { name: "Град Пловдив", altitude: 164, totalFloors: 55 }, { name: "Град Велико Търново", altitude: 220, totalFloors: 73 }, { name: "Белоградчишките скали", altitude: 300, totalFloors: 100 }, { name: "Град София", altitude: 550, totalFloors: 183 }, { name: "Град Трявна", altitude: 730, totalFloors: 243 }, { name: "Град Банско", altitude: 925, totalFloors: 308 }, { name: "Град Копривщица", altitude: 1030, totalFloors: 343 }, { name: "Рилският манастир", altitude: 1147, totalFloors: 382 }, { name: "Местност Копитото", altitude: 1345, totalFloors: 448 }, { name: "Връх Снежанка", altitude: 1550, totalFloors: 517 }, { name: "Хижа Алеко", altitude: 1810, totalFloors: 603 }, { name: "Хижа Вихрен", altitude: 1950, totalFloors: 650 }, { name: "Връх Голям Перелик", altitude: 2191, totalFloors: 730 }, { name: "Черни връх", altitude: 2290, totalFloors: 763 }, { name: "Връх Ботев", altitude: 2376, totalFloors: 792 }, { name: "Връх Мальовица", altitude: 2729, totalFloors: 910 }, { name: "Връх Вихрен", altitude: 2914, totalFloors: 971 }, { name: "ВРЪХ МУСАЛА", altitude: 2925, totalFloors: 975 }
     ];
 
-    const DATABASE_URL = 'ВАШИЯТ_NPOINT_ЛИНК'; // <-- УВЕРЕТЕ СЕ, ЧЕ ВАШИЯТ ЛИНК Е ТУК И Е В КАВИЧКИ!
+    const DATABASE_URL = 'https://api.npoint.io/c8a9b76da1ffd166b1df'; // <-- УВЕРЕТЕ СЕ, ЧЕ ВАШИЯТ ЛИНК Е ТУК И Е В КАВИЧКИ!
 
     const elements = {
         masterProgressContainer: document.querySelector('.master-progress-container'), masterProgressBarBG: document.getElementById('master-progress-bar'), masterProgressFill: document.getElementById('master-progress-fill'), masterCheckpointsContainer: document.getElementById('master-checkpoints'), totalProgressEl: document.getElementById('total-progress'), nextCheckpointNameEl: document.getElementById('next-checkpoint-name'), progressBarEl: document.getElementById('progress-bar'), progressTextEl: document.getElementById('progress-text'), addBlockBtn: document.getElementById('add-block-btn'), addFloorBtn: document.getElementById('add-floor-btn'), checkpointListEl: document.getElementById('checkpoint-list'), congratsPopup: document.getElementById('congrats-popup'), popupCheckpointName: document.getElementById('popup-checkpoint-name'), closePopupBtn: document.getElementById('close-popup-btn')
@@ -71,3 +71,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initializeApp();
 });
+
