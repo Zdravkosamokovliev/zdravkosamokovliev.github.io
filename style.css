@@ -2,19 +2,19 @@
 body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f0f2f5; color: #333; margin: 0; padding: 20px; }
 .container { max-width: 600px; margin: 0 auto; }
 h1, h2 { text-align: center; color: #1c4b7a; }
-.card { background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 20px; margin-bottom: 20px; overflow: hidden; /* КОРЕКЦИЯ: Всички карти по подразбиране скриват съдържанието */ }
+.card { background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 20px; margin-bottom: 20px; }
 
 /* --- СТИЛОВЕ ЗА ГЛАВНАТА СКРОЛИРАЩА ЛЕНТА --- */
-/* КОРЕКЦИЯ: Правим изключение САМО за тази карта да показва извън границите си */
-#master-progress-card {
-    overflow: visible;
-}
 .master-progress-container {
     padding: 25px 0;
     overflow-x: scroll;
     -webkit-overflow-scrolling: touch;
     cursor: grab;
     border-radius: 8px;
+    scrollbar-width: none; /* Скриване на скролбара за Firefox */
+}
+.master-progress-container::-webkit-scrollbar {
+    display: none; /* Скриване на скролбара за Chrome, Safari, etc. */
 }
 .master-progress-container:active { cursor: grabbing; }
 
@@ -24,24 +24,19 @@ h1, h2 { text-align: center; color: #1c4b7a; }
 .checkpoint-marker { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 16px; height: 16px; background-color: #ccc; border: 2px solid #fff; border-radius: 50%; cursor: pointer; transition: background-color 0.3s, border-color 0.3s; z-index: 5; }
 .checkpoint-marker.completed { background-color: #28a745; border-color: #fff; }
 
-.checkpoint-marker::after {
-    content: attr(data-name);
-    position: absolute;
-    bottom: 150%; 
-    left: 50%;
-    transform: translateX(-50%);
+/* НОВО: Стил за динамичния тултип, който се създава от JS */
+.dynamic-tooltip {
+    position: fixed; /* Най-важното: позиционира се спрямо прозореца */
     background-color: #333;
     color: #fff;
     padding: 5px 10px;
     border-radius: 4px;
     white-space: nowrap;
     font-size: 12px;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.2s, visibility 0.2s;
-    z-index: 10;
+    z-index: 1000; /* Гарантираме, че е най-отгоре */
+    pointer-events: none; /* Не пречи на мишката */
+    transform: translate(-50%, -120%); /* Центрираме го над курсора */
 }
-.checkpoint-marker:hover::after { opacity: 1; visibility: visible; }
 
 /* --- ОСТАНАЛИТЕ СТИЛОВЕ (БЕЗ ПРОМЯНА) --- */
 .progress-bar-container { width: 100%; background-color: #e9ecef; border-radius: 5px; height: 20px; margin: 10px 0; }
@@ -60,4 +55,84 @@ h1, h2 { text-align: center; color: #1c4b7a; }
 .popup-hidden { display: none; }
 .popup-visible { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 100; }
 .popup-content { background: white; padding: 30px; border-radius: 8px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-#close-popup-btn { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px; }
+#close-popup-btn { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px; }```
+
+---
+
+### **Файл 3: `script.js` (Финална, работеща версия)**
+*(Тук е добавена новата логика за създаване/унищожаване на тултипа при hover.)*
+
+```javascript
+document.addEventListener('DOMContentLoaded', () => {
+
+    const MASTER_BAR_WIDTH_PX = 3000;
+    const checkpoints = [
+        { name: "Старт: Нос Шабла", altitude: 0, totalFloors: 0 }, { name: "Град Свищов", altitude: 90, totalFloors: 30 }, { name: "Град Пловдив", altitude: 164, totalFloors: 55 }, { name: "Град Велико Търново", altitude: 220, totalFloors: 73 }, { name: "Белоградчишките скали", altitude: 300, totalFloors: 100 }, { name: "Град София", altitude: 550, totalFloors: 183 }, { name: "Град Трявна", altitude: 730, totalFloors: 243 }, { name: "Град Банско", altitude: 925, totalFloors: 308 }, { name: "Град Копривщица", altitude: 1030, totalFloors: 343 }, { name: "Рилският манастир", altitude: 1147, totalFloors: 382 }, { name: "Местност Копитото", altitude: 1345, totalFloors: 448 }, { name: "Връх Снежанка", altitude: 1550, totalFloors: 517 }, { name: "Хижа Алеко", altitude: 1810, totalFloors: 603 }, { name: "Хижа Вихрен", altitude: 1950, totalFloors: 650 }, { name: "Връх Голям Перелик", altitude: 2191, totalFloors: 730 }, { name: "Черни връх", altitude: 2290, totalFloors: 763 }, { name: "Връх Ботев", altitude: 2376, totalFloors: 792 }, { name: "Връх Мальовица", altitude: 2729, totalFloors: 910 }, { name: "Връх Вихрен", altitude: 2914, totalFloors: 971 }, { name: "ВРЪХ МУСАЛА", altitude: 2925, totalFloors: 975 }
+    ];
+
+    const DATABASE_URL = 'https://api.npoint.io/79b9f384a0250c33f1bb'; // <-- УВЕРЕТЕ СЕ, ЧЕ ВАШИЯТ ЛИНК Е ТУК И Е В КАВИЧКИ!
+
+    const elements = {
+        masterProgressContainer: document.querySelector('.master-progress-container'), masterProgressBarBG: document.getElementById('master-progress-bar'), masterProgressFill: document.getElementById('master-progress-fill'), masterCheckpointsContainer: document.getElementById('master-checkpoints'), totalProgressEl: document.getElementById('total-progress'), nextCheckpointNameEl: document.getElementById('next-checkpoint-name'), progressBarEl: document.getElementById('progress-bar'), progressTextEl: document.getElementById('progress-text'), addBlockBtn: document.getElementById('add-block-btn'), addFloorBtn: document.getElementById('add-floor-btn'), checkpointListEl: document.getElementById('checkpoint-list'), congratsPopup: document.getElementById('congrats-popup'), popupCheckpointName: document.getElementById('popup-checkpoint-name'), closePopupBtn: document.getElementById('close-popup-btn')
+    };
+    
+    let totalFloorsClimbed = 0;
+    let tooltipElement = null; // Променлива за динамичния тултип
+
+    // --- КОМУНИКАЦИЯ И ПОМОЩНИ ФУНКЦИИ (без промяна) ---
+    async function saveProgress() { try { await fetch(DATABASE_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ totalFloorsClimbed: totalFloorsClimbed }) }); } catch (error) { console.error("Грешка при запис:", error); } }
+    async function loadProgress() { try { const response = await fetch(DATABASE_URL); const data = await response.json(); totalFloorsClimbed = data.totalFloorsClimbed || 0; } catch (error) { console.error("Грешка при зареждане:", error); totalFloorsClimbed = 0; } }
+    function formatFloors(floors) { if (floors === 0) return "0 блока и 0 етажа"; const blocks = Math.floor(floors / 8); const remainingFloors = floors % 8; return `${blocks} блока и ${remainingFloors} етажа`; }
+    function scrollToCurrentPosition() { const maxFloors = checkpoints[checkpoints.length - 1].totalFloors; if (maxFloors === 0) return; const currentPositionPx = (totalFloorsClimbed / maxFloors) * MASTER_BAR_WIDTH_PX; const containerWidth = elements.masterProgressContainer.offsetWidth; const scrollTarget = currentPositionPx - (containerWidth / 2); elements.masterProgressContainer.scrollTo({ left: scrollTarget, behavior: 'smooth' }); }
+    
+    function initializeMasterRoadmap() {
+        elements.masterProgressBarBG.style.width = `${MASTER_BAR_WIDTH_PX}px`;
+        const maxFloors = checkpoints[checkpoints.length - 1].totalFloors;
+        elements.masterCheckpointsContainer.innerHTML = '';
+        checkpoints.forEach(cp => {
+            const marker = document.createElement('div');
+            marker.className = 'checkpoint-marker';
+            const leftPositionPx = (cp.totalFloors / maxFloors) * MASTER_BAR_WIDTH_PX;
+            marker.style.left = `${leftPositionPx}px`;
+            marker.dataset.name = `${cp.name} (${cp.altitude} м)`;
+            
+            // --- НОВА ЛОГИКА ЗА ТУЛТИПА ---
+            marker.addEventListener('mouseenter', (e) => {
+                tooltipElement = document.createElement('div');
+                tooltipElement.className = 'dynamic-tooltip';
+                tooltipElement.textContent = e.target.dataset.name;
+                document.body.appendChild(tooltipElement);
+
+                // Позиционираме го спрямо мишката
+                tooltipElement.style.left = `${e.pageX}px`;
+                tooltipElement.style.top = `${e.pageY}px`;
+            });
+
+            marker.addEventListener('mousemove', (e) => {
+                if(tooltipElement) {
+                    tooltipElement.style.left = `${e.pageX}px`;
+                    tooltipElement.style.top = `${e.pageY}px`;
+                }
+            });
+
+            marker.addEventListener('mouseleave', () => {
+                if (tooltipElement) {
+                    tooltipElement.remove();
+                    tooltipElement = null;
+                }
+            });
+
+            elements.masterCheckpointsContainer.appendChild(marker);
+        });
+    }
+    
+    // --- UPDATE UI & EVENT LISTENERS (без промяна) ---
+    function updateUI() { const maxFloors = checkpoints[checkpoints.length - 1].totalFloors; if (maxFloors > 0) { const totalProgressPx = (totalFloorsClimbed / maxFloors) * MASTER_BAR_WIDTH_PX; elements.masterProgressFill.style.width = `${totalProgressPx}px`; } const markers = document.querySelectorAll('.checkpoint-marker'); markers.forEach((marker, index) => { if (checkpoints[index].totalFloors <= totalFloorsClimbed) { marker.classList.add('completed'); } else { marker.classList.remove('completed'); } }); let lastCompletedIndex = -1; checkpoints.forEach((cp, index) => { if (totalFloorsClimbed >= cp.totalFloors) { lastCompletedIndex = index; } }); const nextCheckpointIndex = lastCompletedIndex + 1; elements.totalProgressEl.textContent = formatFloors(totalFloorsClimbed); if (nextCheckpointIndex < checkpoints.length) { const lastCheckpointFloors = (lastCompletedIndex === -1) ? 0 : checkpoints[lastCompletedIndex].totalFloors; const nextCheckpoint = checkpoints[nextCheckpointIndex]; elements.nextCheckpointNameEl.textContent = nextCheckpoint.name; const floorsInThisLeg = nextCheckpoint.totalFloors - lastCheckpointFloors; const floorsClimbedInThisLeg = totalFloorsClimbed - lastCheckpointFloors; const percentage = floorsInThisLeg > 0 ? Math.round((floorsClimbedInThisLeg / floorsInThisLeg) * 100) : 0; elements.progressBarEl.style.width = `${percentage}%`; elements.progressTextEl.textContent = `${percentage}%`; } else { elements.nextCheckpointNameEl.textContent = "ПОЗДРАВЛЕНИЯ! ФИНАЛИРАХТЕ!"; elements.progressBarEl.style.width = '100%'; elements.progressTextEl.textContent = '100%'; } elements.checkpointListEl.innerHTML = ''; checkpoints.forEach((cp, index) => { const li = document.createElement('li'); li.innerHTML = `<span>${cp.name} (${cp.altitude} м)</span><div class="checkpoint-details">Цел: ${formatFloors(cp.totalFloors)}</div>`; if (index <= lastCompletedIndex) { li.classList.add('completed'); } else if (index === nextCheckpointIndex) { li.classList.add('current'); } elements.checkpointListEl.appendChild(li); }); }
+    async function handleAddProgress(floorsToAdd) { const previousTotal = totalFloorsClimbed; totalFloorsClimbed += floorsToAdd; const newReachedCheckpoints = checkpoints.filter(cp => cp.totalFloors > previousTotal && cp.totalFloors <= totalFloorsClimbed); if (newReachedCheckpoints.length > 0) { const latestCheckpoint = newReachedCheckpoints[newReachedCheckpoints.length - 1]; elements.popupCheckpointName.textContent = latestCheckpoint.name; elements.congratsPopup.className = 'popup-visible'; } await saveProgress(); updateUI(); scrollToCurrentPosition(); }
+    elements.addBlockBtn.addEventListener('click', () => handleAddProgress(8));
+    elements.addFloorBtn.addEventListener('click', () => handleAddProgress(1));
+    elements.closePopupBtn.addEventListener('click', () => { elements.congratsPopup.className = 'popup-hidden'; });
+    async function initializeApp() { initializeMasterRoadmap(); await loadProgress(); updateUI(); setTimeout(scrollToCurrentPosition, 500); }
+
+    initializeApp();
+});
