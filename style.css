@@ -2,35 +2,31 @@
 body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f0f2f5; color: #333; margin: 0; padding: 20px; }
 .container { max-width: 600px; margin: 0 auto; }
 h1, h2 { text-align: center; color: #1c4b7a; }
-.card { background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 20px; margin-bottom: 20px; }
+.card { background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 20px; margin-bottom: 20px; overflow: hidden; /* КОРЕКЦИЯ: Всички карти по подразбиране скриват съдържанието */ }
 
 /* --- СТИЛОВЕ ЗА ГЛАВНАТА СКРОЛИРАЩА ЛЕНТА --- */
+/* КОРЕКЦИЯ: Правим изключение САМО за тази карта да показва извън границите си */
+#master-progress-card {
+    overflow: visible;
+}
 .master-progress-container {
     padding: 25px 0;
-    overflow-x: scroll; /* Запазваме скрола */
+    overflow-x: scroll;
     -webkit-overflow-scrolling: touch;
     cursor: grab;
     border-radius: 8px;
-    /* КОРЕКЦИЯ: Премахваме overflow:hidden от родителя */
 }
 .master-progress-container:active { cursor: grabbing; }
-
-/* КОРЕКЦИЯ: Добавяме това към card, който е родител */
-.card {
-    position: relative; /* Необходимо за z-index */
-    overflow: visible; /* ПОЗВОЛЯВАМЕ на съдържанието да излиза */
-}
 
 .master-progress-bar-bg { position: relative; width: 3000px; height: 12px; background-color: #e9ecef; border-radius: 6px; margin: 0 15px; }
 .master-progress-bar-fill { height: 100%; width: 0; background: linear-gradient(90deg, #007bff, #00c6ff); border-radius: 6px; transition: width 0.5s ease-in-out; }
 .master-checkpoints-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-.checkpoint-marker { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 16px; height: 16px; background-color: #ccc; border: 2px solid #fff; border-radius: 50%; cursor: pointer; transition: background-color 0.3s, border-color 0.3s; z-index: 5; /* Поставяме маркера над лентата */ }
+.checkpoint-marker { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 16px; height: 16px; background-color: #ccc; border: 2px solid #fff; border-radius: 50%; cursor: pointer; transition: background-color 0.3s, border-color 0.3s; z-index: 5; }
 .checkpoint-marker.completed { background-color: #28a745; border-color: #fff; }
 
 .checkpoint-marker::after {
     content: attr(data-name);
     position: absolute;
-    /* Позиционираме го спрямо маркера */
     bottom: 150%; 
     left: 50%;
     transform: translateX(-50%);
@@ -43,7 +39,7 @@ h1, h2 { text-align: center; color: #1c4b7a; }
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.2s, visibility 0.2s;
-    z-index: 10; /* Поставяме тултипа НАЙ-ОТГОРЕ */
+    z-index: 10;
 }
 .checkpoint-marker:hover::after { opacity: 1; visibility: visible; }
 
@@ -64,9 +60,4 @@ h1, h2 { text-align: center; color: #1c4b7a; }
 .popup-hidden { display: none; }
 .popup-visible { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 100; }
 .popup-content { background: white; padding: 30px; border-radius: 8px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-#close-popup-btn { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px; }```
-
-**Финално обяснение на корекцията:**
-Проблемът беше, че `.card`-ът, който обвива прогрес лентата, я "затваряше". С добавянето на `overflow: visible;` към общия стил за `.card`, ние му казваме: "Позволи на твоето съдържание (в случая тултипа, който е част от маркера) да излиза извън твоите граници". С добавянето на `z-index` към маркера и тултипа, ние гарантираме, че те ще се показват *над* всичко останало.
-
-Това е правилният и чист начин да се реши проблема. Моля, заменете целия си `style.css` с този код и всичко ще работи.
+#close-popup-btn { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px; }
