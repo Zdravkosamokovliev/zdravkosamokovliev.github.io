@@ -6,155 +6,47 @@ body {
     margin: 0;
     padding: 20px;
 }
+.container { max-width: 600px; margin: 0 auto; }
+h1, h2 { text-align: center; color: #1c4b7a; }
+.card { background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 20px; margin-bottom: 20px; }
 
-.container {
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-h1, h2 {
-    text-align: center;
-    color: #1c4b7a;
-}
-
-.card {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    padding: 20px;
-    margin-bottom: 20px;
-}
-
-/* --- СТИЛОВЕ ЗА ГЛАВНАТА СКРОЛИРАЩА ЛЕНТА И СТРЕЛКИТЕ --- */
-.master-progress-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    padding: 25px 10px; /* Намаляваме страничния padding */
-    overflow: hidden; /* Скриваме всичко извън контейнера */
-}
-
-.scroll-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 30px;
-    height: 30px;
-    background-color: rgba(255, 255, 255, 0.8);
-    border: 1px solid #ddd;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 20px;
-    font-weight: bold;
-    color: #333;
-    cursor: pointer;
-    z-index: 10;
-    user-select: none; /* Предотвратява маркирането на текста */
-    transition: background-color 0.2s;
-}
-.scroll-arrow:hover {
-    background-color: #f0f0f0;
-}
-.scroll-arrow.left { left: 5px; }
-.scroll-arrow.right { right: 5px; }
-
+/* --- СТИЛОВЕ ЗА ГЛАВНАТА СКРОЛИРАЩА ЛЕНТА --- */
 .master-progress-container {
-    flex-grow: 1;
+    padding: 25px 0;
     overflow-x: scroll;
     -webkit-overflow-scrolling: touch;
     cursor: grab;
-    /* --- МАГИЯТА ЗА СКРИВАНЕ НА СКРОЛБАРА --- */
-    scrollbar-width: none; /* За Firefox */
+    border-radius: 8px;
 }
-.master-progress-container::-webkit-scrollbar {
-    display: none; /* За Chrome, Safari, Opera */
-}
-.master-progress-container:active {
-    cursor: grabbing;
-}
+.master-progress-container:active { cursor: grabbing; }
+.master-progress-bar-bg { position: relative; width: 3000px; height: 12px; background-color: #e9ecef; border-radius: 6px; margin: 0 15px; }
+.master-progress-bar-fill { height: 100%; width: 0; background: linear-gradient(90deg, #007bff, #00c6ff); border-radius: 6px; transition: width 0.5s ease-in-out; }
+.master-checkpoints-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+.checkpoint-marker { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 16px; height: 16px; background-color: #ccc; border: 2px solid #fff; border-radius: 50%; cursor: pointer; transition: background-color 0.3s, border-color 0.3s; }
+.checkpoint-marker.completed { background-color: #28a745; border-color: #fff; }
+.checkpoint-marker::after { content: attr(data-name); position: absolute; bottom: 150%; left: 50%; transform: translateX(-50%); background-color: #333; color: #fff; padding: 5px 10px; border-radius: 4px; white-space: nowrap; font-size: 12px; opacity: 0; visibility: hidden; transition: opacity 0.2s, visibility 0.2s; }
+.checkpoint-marker:hover::after { opacity: 1; visibility: visible; }
 
-.master-progress-bar-bg {
-    position: relative;
-    width: 3000px;
-    height: 12px;
-    background-color: #e9ecef;
-    border-radius: 6px;
-}
-
-.master-progress-bar-fill {
-    height: 100%;
-    width: 0;
-    background: linear-gradient(90deg, #007bff, #00c6ff);
-    border-radius: 6px;
-    transition: width 0.5s ease-in-out;
-}
-
-.master-checkpoints-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
-
-.checkpoint-marker {
-    position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 16px;
-    height: 16px;
-    background-color: #ccc;
-    border: 2px solid #fff;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background-color 0.3s, border-color 0.3s;
-}
-
-.checkpoint-marker.completed {
-    background-color: #28a745;
-    border-color: #fff;
-}
-
-.checkpoint-marker::after {
-    content: attr(data-name);
-    position: absolute;
-    /* --- КОРЕКЦИЯ НА ТУЛТИПА --- */
-    top: -35px; /* Преместваме го по-нагоре */
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #333;
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 4px;
-    white-space: nowrap;
-    font-size: 12px;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.2s, visibility 0.2s;
-    z-index: 20; /* Гарантираме, че е над всичко */
-}
-
-.checkpoint-marker:hover::after {
-    opacity: 1;
-    visibility: visible;
-}
-
-/* --- ОСТАНАЛИТЕ СТИЛОВЕ (БЕЗ ПРОМЯНА) --- */
+/* --- СТИЛОВЕ ЗА ТАБЛОТО И МАЛКАТА ПРОГРЕС ЛЕНТА --- */
 .progress-bar-container { width: 100%; background-color: #e9ecef; border-radius: 5px; height: 20px; margin: 10px 0; }
 .progress-bar { height: 100%; width: 0%; background-color: #007bff; border-radius: 5px; transition: width 0.5s ease-in-out; }
 #progress-text { text-align: center; display: block; font-weight: bold; }
+
+/* --- СТИЛОВЕ ЗА БЪРЗИ БУТОНИ --- */
 .quick-add-group { display: flex; justify-content: space-between; gap: 15px; }
 .quick-add-btn { flex-grow: 1; padding: 15px; font-size: 16px; font-weight: bold; color: white; background-color: #007bff; border: none; border-radius: 8px; cursor: pointer; transition: transform 0.1s ease, background-color 0.2s; }
 .quick-add-btn:active { transform: scale(0.97); }
 #add-floor-btn { background-color: #17a2b8; }
+
+/* --- СТИЛОВЕ ЗА ПЪТНА КАРТА (СПИСЪК) --- */
 #checkpoint-list { list-style-type: none; padding: 0; }
 #checkpoint-list li { padding: 15px; border-bottom: 1px solid #eee; opacity: 0.5; transition: all 0.3s; }
 #checkpoint-list li:last-child { border-bottom: none; }
 #checkpoint-list li.completed { opacity: 1; background-color: #e8f5e9; text-decoration: line-through; }
 #checkpoint-list li.current { opacity: 1; font-weight: bold; background-color: #e7f3ff; }
 .checkpoint-details { font-size: 0.8em; color: #666; }
+
+/* --- СТИЛОВЕ ЗА ПОП-ЪП ПРОЗОРЕЦ --- */
 .popup-hidden { display: none; }
 .popup-visible { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 100; }
 .popup-content { background: white; padding: 30px; border-radius: 8px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
