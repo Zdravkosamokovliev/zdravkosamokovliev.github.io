@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Стълбички</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Стълбички</h1>
+        <!-- НОВО: ГЛАВНА ПРОГРЕС ЛЕНТА ЗА ЦЯЛОТО ПЪТЕШЕСТВИЕ -->
+<div class="master-progress-container card">
+    <div id="master-progress-bar" class="master-progress-bar-bg">
+        <div id="master-progress-fill" class="master-progress-bar-fill"></div>
+        <div id="master-checkpoints" class="master-checkpoints-container">
+            <!-- Маркерите за чекпойнтите ще се генерират тук от JavaScript -->
+        </div>
+    </div>
+</div>
+
+        <!-- СЕКЦИЯ ЗА НАПРЕДЪК -->
+        <div id="dashboard" class="card">
+            <h2>Вашият напредък</h2>
+            <p>Общо изкачени: <strong id="total-progress">0 блока и 0 етажа</strong></p>
+            <p>Следваща цел: <strong id="next-checkpoint-name">Град Свищов</strong></p>
+            <div class="progress-bar-container">
+                <div id="progress-bar" class="progress-bar"></div>
+            </div>
+            <p><span id="progress-text">0%</span></p>
+        </div>
+
+       <!-- НОВО: СЕКЦИЯ С БЪРЗИ БУТОНИ -->
+<div id="input-section" class="card">
+    <h2>Бързо добавяне</h2>
+    <div class="quick-add-group">
+        <button id="add-block-btn" class="quick-add-btn">+ 1 Блок (8 ет.)</button>
+        <button id="add-floor-btn" class="quick-add-btn">+ 1 Етаж</button>
+    </div>
+</div>
+
+        <!-- ПЪТНА КАРТА -->
+        <div id="roadmap" class="card">
+            <h2>Пътна карта</h2>
+            <ul id="checkpoint-list">
+                <!-- Чекпойнтовете ще се генерират тук от JavaScript -->
+            </ul>
+        </div>
+    </div>
+    
+    <!-- ПОП-ЪП ЗА ПОЗДРАВЛЕНИЕ (скрит по подразбиране) -->
+    <div id="congrats-popup" class="popup-hidden">
+        <div class="popup-content">
+            <h2>ПОЗДРАВЛЕНИЯ!</h2>
+            <p>Вие достигнахте <strong id="popup-checkpoint-name">Име на чекпойнт</strong>!</p>
+            <button id="close-popup-btn">Супер!</button>
+        </div>
+    </div>
+
+
+    <script src="script.js" defer></script>
+</body>
+</html>
