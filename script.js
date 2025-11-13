@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 4. КОМУНИКАЦИЯ С ОБЛАЧНАТА БАЗА ДАННИ (npoint.io)
     // =======================================================
-    const DATABASE_URL = https://api.npoint.io/79b9f384a0250c33f1bb; // <-- ПОСТАВЕТЕ ЛИНКА ОТ NPOINT.IO ТУК!
+    const DATABASE_URL = 'https://api.npoint.io/79b9f384a0250c33f1bb'; // <-- ПОСТАВЕТЕ ЛИНКА ОТ NPOINT.IO ТУК!
 
     async function saveProgress() {
         try {
@@ -87,4 +87,5 @@ document.addEventListener('DOMContentLoaded', () => {
     closePopupBtn.addEventListener('click', () => { congratsPopup.className = 'popup-hidden'; });
     async function initializeApp() { initializeMasterRoadmap(); await loadProgress(); updateUI(); setTimeout(scrollToCurrentPosition, 500); }
     initializeApp();
+
 });
