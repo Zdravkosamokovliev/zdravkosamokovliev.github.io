@@ -49,8 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 4. КОМУНИКАЦИЯ С ОБЛАЧНАТА БАЗА ДАННИ (npoint.io)
     // =======================================================
-    const DATABASE_URL = 'https://api.npoint.io/79b9f384a0250c33f1bb'; // <-- ПОСТАВЕТЕ ЛИНКА ОТ NPOINT.IO ТУК!
-
+const DATABASE_URL = 'https://api.npoint.io/79b9f384a0250c33f1bb';
     async function saveProgress() {
         try {
             // npoint.io използва POST за обновяване
@@ -89,3 +88,4 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeApp();
 
 });
+
